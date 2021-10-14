@@ -4,9 +4,10 @@ const { use } = require('../routes/tour-router');
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`,'utf-8'));
 
 exports.checkID = ((req,res,next,val)=>{
-    const id = req.params.id * 1 > tours.length;
-    const tour = tours.find(el=>el.id === id)
+    console.log('val: '+val);
+    const tour = tours.find(el=>el.id == val);
     if(!tour){
+        console.log('Not Found')
         return res.status(404).json({
             status:"fail",
             message:"Invalid ID"
@@ -14,6 +15,18 @@ exports.checkID = ((req,res,next,val)=>{
     }
     next();
 })
+
+exports.checkBody = (req,res,next)=>{
+    const name = req.body.name;
+    const price = req.body.price;
+    if(!name || price){
+        return res.status(500).json({
+            status:"fail",
+            message:"missing name or price"
+        })
+    }
+    next();
+}
 
 exports.getAllTours =(req,res)=>{
     res.status(200).json({
@@ -42,6 +55,7 @@ exports.createTour = (req,res)=>{
 
 exports.getTour = (req,res)=>{
     console.log(req.body)
+    const tour = tours.find(el=>el.id == req.params.id);
     res.status(200).json({
         status:"success",
         data:{
@@ -51,6 +65,7 @@ exports.getTour = (req,res)=>{
 }
 
 exports.updateTour = (req,res)=>{
+    const tour = tours.find(el=>el.id == req.params.id);
     res.status(200).json({
         status:"success",
         data:{
