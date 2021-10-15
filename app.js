@@ -7,8 +7,16 @@ const userRouter = require('./routes/user-router')
 const app = express();
 
 //Middlewares
+console.log(process.env.NODE_ENV);
+
+app.use(express.static('./public'))
 app.use(express.json())
-app.use(morgan('dev'))
+
+if(process.env.NODE_ENV === 'development'){
+    app.use(morgan('dev'))
+    console.log('Am using morgan here now')
+}
+
 app.use((req,res,next)=>{
     console.log('Hellow from server');
     next();
